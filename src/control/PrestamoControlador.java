@@ -363,3 +363,64 @@ public class PrestamoControlador {
     public ArrayList<Prestamo> obtenerPrestamos() {
         return listaPrestamos;
     }
+
+    // =========================================================
+
+    public String reportePorUsuario() {
+        String reporte = "REPORTE POR USUARIO\n";
+
+        for (Persona persona : listaPersonas) {
+            reporte += "\nUsuario: " + persona.getNombre() + "\n";
+            reporte += "Telefono: " + persona.getTelefono() + "\n";
+            reporte += "Correo: " + persona.getCorreoElectronico() + "\n";
+            reporte += "Prestamos:\n";
+
+            for (Prestamo prestamo : persona.getPrestamos()) {
+                reporte += "- " + prestamo.toString() + "\n";
+            }
+        }
+
+        return reporte;
+    }
+
+    public String reportePorItem() {
+        String reporte = "REPORTE POR ITEM\n";
+
+        for (Item item : listaItems) {
+            reporte += "\nItem: " + item.toString() + "\n";
+            reporte += "Descripcion: " + item.getDescripcion() + "\n";
+            reporte += "Tipo: " + item.getTipo() + "\n";
+            reporte += "Prestado: " + (itemEstaPrestado(item) ? "Si" : "No") + "\n";
+        }
+
+        return reporte;
+    }
+
+    public String reportePorCategoria() {
+        String reporte = "REPORTE POR CATEGORIA\n";
+
+        for (Categoria categoria : listaCategorias) {
+            reporte += "\nCategoria: " + categoria.getNombre() + "\n";
+
+            for (Item item : categoria.getItems()) {
+                reporte += "- " + item.toString() + "\n";
+            }
+        }
+
+        return reporte;
+    }
+
+    public String reportePorTipo() {
+        String reporte = "REPORTE POR TIPO\n";
+
+        for (Tipo tipo : listaTipos) {
+            reporte += "\nTipo: " + tipo.getNombre() + "\n";
+
+            for (Item item : tipo.getItems()) {
+                reporte += "- " + item.toString() + "\n";
+            }
+        }
+
+        return reporte;
+    }
+}
