@@ -151,3 +151,46 @@ public class PrestamoControlador {
         listaPersonas.remove(persona);
         return true;
     }
+    
+    // ------------------------------------------------------------------------------
+    
+    public boolean crearTipo(String nombre) {
+        if (buscarTipo(nombre) != null) {
+            return false;
+        }
+
+        Tipo tipo = new Tipo(nombre);
+        listaTipos.add(tipo);
+        return true;
+    }
+
+    public Tipo buscarTipo(String nombre) {
+        for (Tipo tipo : listaTipos) {
+            if (tipo.getNombre().equalsIgnoreCase(nombre)) {
+                return tipo;
+            }
+        }
+        return null;
+    }
+
+    public boolean modificarTipo(String nombreActual, String nuevoNombre) {
+        Tipo tipo = buscarTipo(nombreActual);
+
+        if (tipo == null) {
+            return false;
+        }
+
+        tipo.setNombre(nuevoNombre);
+        return true;
+    }
+
+    public boolean borrarTipo(String nombre) {
+        Tipo tipo = buscarTipo(nombre);
+
+        if (tipo == null || !tipo.getItems().isEmpty()) {
+            return false;
+        }
+
+        listaTipos.remove(tipo);
+        return true;
+    }
