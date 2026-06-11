@@ -1,5 +1,55 @@
 package logica;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class Item {
 
-}
+    private String codigo;
+    private String nombre;
+    private String descripcion;
+    private Tipo tipo;
+    private ArrayList<Categoria> categorias;
+
+    public Item(String codigo, String nombre, String descripcion) {
+        this.codigo = codigo;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.categorias = new ArrayList<Categoria>();
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Tipo getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Tipo tipo) {
+        if (this.tipo != null) {
+            this.tipo.borrarItem(this);
+        }
+
+        this.tipo = tipo;
+
+        if (tipo != null) {
+            tipo.agregarItem(this);
+        }
+    }
