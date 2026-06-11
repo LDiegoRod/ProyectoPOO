@@ -24,3 +24,23 @@ public class PrestamoControlador {
         this.listaTipos = new ArrayList<Tipo>();
         this.listaPrestamos = new ArrayList<Prestamo>();
     }
+    
+    public ArrayList<Item> getListaItems() {
+        return listaItems;
+    }
+
+    public ArrayList<Persona> getListaPersonas() {
+        return listaPersonas;
+    }
+
+    public ArrayList<Categoria> getListaCategorias() {
+        return listaCategorias;
+    }
+
+    public ArrayList<Tipo> getListaTipos() {
+        return listaTipos;
+    }
+
+    public ArrayList<Prestamo> getListaPrestamos() {
+        return listaPrestamos;
+    }
