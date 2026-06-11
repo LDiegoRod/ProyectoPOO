@@ -53,3 +53,46 @@ public class Item {
             tipo.agregarItem(this);
         }
     }
+
+    public ArrayList<Categoria> getCategorias() {
+        return categorias;
+    }
+
+    public void agregarCategoria(Categoria categoria) {
+        if (categoria != null && !categorias.contains(categoria)) {
+            categorias.add(categoria);
+            categoria.agregarItem(this);
+        }
+    }
+
+    public void eliminarCategoria(Categoria categoria) {
+        if (categoria != null) {
+            categorias.remove(categoria);
+            categoria.borrarItem(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return codigo + " - " + nombre;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof Item)) {
+            return false;
+        }
+
+        Item otro = (Item) obj;
+        return Objects.equals(codigo, otro.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+}
