@@ -44,3 +44,65 @@ public class PrestamoControlador {
     public ArrayList<Prestamo> getListaPrestamos() {
         return listaPrestamos;
     }
+ // ------------------------------------------------------------------------------
+
+    public boolean crearItem(String codigo, String nombre, String descripcion, Tipo tipo) {
+        if (buscarItem(codigo) != null) {
+            return false;
+        }
+
+        Item item = new Item(codigo, nombre, descripcion);
+        item.setTipo(tipo);
+        listaItems.add(item);
+        return true;
+    }
+
+    public Item buscarItem(String codigo) {
+        for (Item item : listaItems) {
+            if (item.getCodigo().equalsIgnoreCase(codigo)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public boolean modificarItem(String codigo, String nuevoNombre, String nuevaDescripcion, Tipo nuevoTipo) {
+        Item item = buscarItem(codigo);
+
+        if (item == null) {
+            return false;
+        }
+
+        item.setNombre(nuevoNombre);
+        item.setDescripcion(nuevaDescripcion);
+        item.setTipo(nuevoTipo);
+        return true;
+    }
+
+    public boolean borrarItem(String codigo) {
+        Item item = buscarItem(codigo);
+
+        if (item == null || itemEstaPrestado(item)) {
+            return false;
+        }
+
+        if (item.getTipo() != null) {
+            item.getTipo().borrarItem(item);
+        }
+
+        for (Categoria categoria : item.getCategorias()) {
+            categoria.borrarItem(item);
+        }
+
+        listaItems.remove(item);
+        return true;
+    }
+
+    public boolean itemEstaPrestado(Item item) {
+        for (Prestamo prestamo : listaPrestamos) {
+            if (prestamo.getItemsPrestados().contains(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
