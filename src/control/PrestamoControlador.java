@@ -106,3 +106,48 @@ public class PrestamoControlador {
         }
         return false;
     }
+    
+    // ------------------------------------------------------------------------------
+    
+    public boolean crearPersona(String nombre, String telefono, String correoElectronico) {
+        if (buscarPersona(correoElectronico) != null) {
+            return false;
+        }
+
+        Persona persona = new Persona(nombre, telefono, correoElectronico);
+        listaPersonas.add(persona);
+        return true;
+    }
+
+    public Persona buscarPersona(String correoElectronico) {
+        for (Persona persona : listaPersonas) {
+            if (persona.getCorreoElectronico().equalsIgnoreCase(correoElectronico)) {
+                return persona;
+            }
+        }
+        return null;
+    }
+
+    public boolean modificarPersona(String correoElectronico, String nuevoNombre, String nuevoTelefono, String nuevoCorreo) {
+        Persona persona = buscarPersona(correoElectronico);
+
+        if (persona == null) {
+            return false;
+        }
+
+        persona.setNombre(nuevoNombre);
+        persona.setTelefono(nuevoTelefono);
+        persona.setCorreoElectronico(nuevoCorreo);
+        return true;
+    }
+
+    public boolean borrarPersona(String correoElectronico) {
+        Persona persona = buscarPersona(correoElectronico);
+
+        if (persona == null || !persona.getPrestamos().isEmpty()) {
+            return false;
+        }
+
+        listaPersonas.remove(persona);
+        return true;
+    }
