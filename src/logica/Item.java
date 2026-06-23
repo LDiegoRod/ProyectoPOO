@@ -10,12 +10,14 @@ public class Item {
     private String descripcion;
     private Tipo tipo;
     private ArrayList<Categoria> categorias;
+    private ArrayList<Prestamo> prestamos;
 
     public Item(String codigo, String nombre, String descripcion) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categorias = new ArrayList<Categoria>();
+        this.prestamos = new ArrayList<Prestamo>();
     }
 
     public String getCodigo() {
@@ -69,6 +71,22 @@ public class Item {
         if (categoria != null) {
             categorias.remove(categoria);
             categoria.borrarItem(this);
+        }
+    }
+
+    public ArrayList<Prestamo> getPrestamos() {
+        return prestamos;
+    }
+
+    public void agregarPrestamo(Prestamo prestamo) {
+        if (prestamo != null && !prestamos.contains(prestamo)) {
+            prestamos.add(prestamo);
+        }
+    }
+
+    public void borrarPrestamo(Prestamo prestamo) {
+        if (prestamo != null) {
+            prestamos.remove(prestamo);
         }
     }
 

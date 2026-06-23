@@ -49,12 +49,14 @@ public class Prestamo {
     public void agregarItem(Item item) {
         if (item != null && !itemsPrestados.contains(item)) {
             itemsPrestados.add(item);
+            item.agregarPrestamo(this);
         }
     }
 
     public void eliminarItem(Item item) {
-        if (item != null) {
+        if (item != null && itemsPrestados.contains(item)) {
             itemsPrestados.remove(item);
+            item.borrarPrestamo(this);
         }
     }
 
@@ -76,6 +78,12 @@ public class Prestamo {
 
     @Override
     public String toString() {
-        return "Prestamo de " + prestatario + " - Items: " + itemsPrestados.size();
+        String nombrePersona = "Sin prestatario";
+
+        if (prestatario != null) {
+            nombrePersona = prestatario.getNombre();
+        }
+
+        return "Prestamo de " + nombrePersona + " - Items: " + itemsPrestados.size();
     }
 }
