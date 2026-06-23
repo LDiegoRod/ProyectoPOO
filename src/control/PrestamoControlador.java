@@ -24,40 +24,30 @@ public class PrestamoControlador {
         this.listaTipos = new ArrayList<Tipo>();
         this.listaPrestamos = new ArrayList<Prestamo>();
     }
-    
-    public ArrayList<Item> getListaItems() {
-        return listaItems;
-    }
-
-    public ArrayList<Persona> getListaPersonas() {
-        return listaPersonas;
-    }
-
-    public ArrayList<Categoria> getListaCategorias() {
-        return listaCategorias;
-    }
-
-    public ArrayList<Tipo> getListaTipos() {
-        return listaTipos;
-    }
-
-    public ArrayList<Prestamo> getListaPrestamos() {
-        return listaPrestamos;
-    }
-
     // =========================================================
+    public boolean crearItem(String codigo, String nombre, String descripcion, String nombreTipo,
+            ArrayList<String> nombresCategorias) {
 
-    public boolean crearItem(String codigo, String nombre, String descripcion, Tipo tipo, ArrayList<Categoria> categorias) {
         if (consultarItem(codigo) != null) {
+            return false;
+        }
+
+        Tipo tipo = consultarTipo(nombreTipo);
+
+        if (tipo == null) {
             return false;
         }
 
         Item item = new Item(codigo, nombre, descripcion);
         item.setTipo(tipo);
 
-        if (categorias != null) {
-            for (Categoria categoria : categorias) {
-                item.agregarCategoria(categoria);
+        if (nombresCategorias != null) {
+            for (String nombreCategoria : nombresCategorias) {
+                Categoria categoria = consultarCategoria(nombreCategoria);
+
+                if (categoria != null) {
+                    item.agregarCategoria(categoria);
+                }
             }
         }
 
@@ -65,8 +55,18 @@ public class PrestamoControlador {
         return true;
     }
 
-    public boolean modificarItem(Item item, String nombre, String descripcion, Tipo tipo, ArrayList<Categoria> categorias) {
-        if (item == null || !listaItems.contains(item)) {
+    public boolean modificarItem(String codigo, String nombre, String descripcion, String nombreTipo,
+            ArrayList<String> nombresCategorias) {
+
+        Item item = consultarItem(codigo);
+
+        if (item == null) {
+            return false;
+        }
+
+        Tipo tipo = consultarTipo(nombreTipo);
+
+        if (tipo == null) {
             return false;
         }
 
@@ -80,17 +80,23 @@ public class PrestamoControlador {
             item.eliminarCategoria(categoria);
         }
 
-        if (categorias != null) {
-            for (Categoria categoria : categorias) {
-                item.agregarCategoria(categoria);
+        if (nombresCategorias != null) {
+            for (String nombreCategoria : nombresCategorias) {
+                Categoria categoria = consultarCategoria(nombreCategoria);
+
+                if (categoria != null) {
+                    item.agregarCategoria(categoria);
+                }
             }
         }
 
         return true;
     }
 
-    public boolean borrarItem(Item item) {
-        if (item == null || !listaItems.contains(item)) {
+    public boolean borrarItem(String codigo) {
+        Item item = consultarItem(codigo);
+
+        if (item == null) {
             return false;
         }
 
@@ -126,41 +132,39 @@ public class PrestamoControlador {
         return listaItems;
     }
 
-    public boolean itemEstaPrestado(Item item) {
-        for (Prestamo prestamo : listaPrestamos) {
-            if (prestamo.getItemsPrestados().contains(item)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     // =========================================================
 
-    public boolean crearPersona(String nombre, String telefono, String correoElectronico) {
-        if (consultarPersona(correoElectronico) != null) {
+    public boolean crearPersona(String nombre, String telefono, String correo) {
+        if (consultarPersona(correo) != null) {
             return false;
         }
 
-        Persona persona = new Persona(nombre, telefono, correoElectronico);
+        Persona persona = new Persona(nombre, telefono, correo);
         listaPersonas.add(persona);
         return true;
     }
 
-    public boolean modificarPersona(Persona persona, String nombre, String telefono, String correoElectronico) {
-        if (persona == null || !listaPersonas.contains(persona)) {
+    public boolean modificarPersona(String correoActual, String nombre, String telefono, String correoNuevo) {
+        Persona persona = consultarPersona(correoActual);
+
+        if (persona == null) {
+            return false;
+        }
+
+        if (!correoActual.equalsIgnoreCase(correoNuevo) && consultarPersona(correoNuevo) != null) {
             return false;
         }
 
         persona.setNombre(nombre);
         persona.setTelefono(telefono);
-        persona.setCorreoElectronico(correoElectronico);
+        persona.setCorreoElectronico(correoNuevo);
         return true;
     }
 
-    public boolean borrarPersona(Persona persona) {
-        if (persona == null || !listaPersonas.contains(persona)) {
+    public boolean borrarPersona(String correo) {
+        Persona persona = consultarPersona(correo);
+
+        if (persona == null) {
             return false;
         }
 
@@ -172,9 +176,9 @@ public class PrestamoControlador {
         return true;
     }
 
-    public Persona consultarPersona(String correoElectronico) {
+    public Persona consultarPersona(String correo) {
         for (Persona persona : listaPersonas) {
-            if (persona.getCorreoElectronico().equalsIgnoreCase(correoElectronico)) {
+            if (persona.getCorreoElectronico().equalsIgnoreCase(correo)) {
                 return persona;
             }
         }
@@ -185,10 +189,7 @@ public class PrestamoControlador {
     public ArrayList<Persona> obtenerPersonas() {
         return listaPersonas;
     }
-
-
     // =========================================================
-
     public boolean crearCategoria(String nombre) {
         if (consultarCategoria(nombre) != null) {
             return false;
@@ -199,23 +200,31 @@ public class PrestamoControlador {
         return true;
     }
 
-    public boolean modificarCategoria(Categoria categoria, String nombre) {
-        if (categoria == null || !listaCategorias.contains(categoria)) {
+    public boolean modificarCategoria(String nombreActual, String nombreNuevo) {
+        Categoria categoria = consultarCategoria(nombreActual);
+
+        if (categoria == null) {
             return false;
         }
 
-        categoria.setNombre(nombre);
+        if (!nombreActual.equalsIgnoreCase(nombreNuevo) && consultarCategoria(nombreNuevo) != null) {
+            return false;
+        }
+
+        categoria.setNombre(nombreNuevo);
         return true;
     }
 
-    public boolean borrarCategoria(Categoria categoria) {
-        if (categoria == null || !listaCategorias.contains(categoria)) {
+    public boolean borrarCategoria(String nombre) {
+        Categoria categoria = consultarCategoria(nombre);
+
+        if (categoria == null) {
             return false;
         }
 
-        ArrayList<Item> itemsDeCategoria = new ArrayList<Item>(categoria.getItems());
+        ArrayList<Item> itemsCategoria = new ArrayList<Item>(categoria.getItems());
 
-        for (Item item : itemsDeCategoria) {
+        for (Item item : itemsCategoria) {
             item.eliminarCategoria(categoria);
         }
 
@@ -236,10 +245,7 @@ public class PrestamoControlador {
     public ArrayList<Categoria> obtenerCategorias() {
         return listaCategorias;
     }
-
-
     // =========================================================
-
     public boolean crearTipo(String nombre) {
         if (consultarTipo(nombre) != null) {
             return false;
@@ -250,17 +256,25 @@ public class PrestamoControlador {
         return true;
     }
 
-    public boolean modificarTipo(Tipo tipo, String nombre) {
-        if (tipo == null || !listaTipos.contains(tipo)) {
+    public boolean modificarTipo(String nombreActual, String nombreNuevo) {
+        Tipo tipo = consultarTipo(nombreActual);
+
+        if (tipo == null) {
             return false;
         }
 
-        tipo.setNombre(nombre);
+        if (!nombreActual.equalsIgnoreCase(nombreNuevo) && consultarTipo(nombreNuevo) != null) {
+            return false;
+        }
+
+        tipo.setNombre(nombreNuevo);
         return true;
     }
 
-    public boolean borrarTipo(Tipo tipo) {
-        if (tipo == null || !listaTipos.contains(tipo)) {
+    public boolean borrarTipo(String nombre) {
+        Tipo tipo = consultarTipo(nombre);
+
+        if (tipo == null) {
             return false;
         }
 
@@ -285,31 +299,44 @@ public class PrestamoControlador {
     public ArrayList<Tipo> obtenerTipos() {
         return listaTipos;
     }
-    
     // =========================================================
+    public Prestamo crearPrestamo(String correoPrestatario, ArrayList<String> codigosItems, String mensajeAlerta,
+            boolean esRecurrente, int tiempo, String fechaInicio) {
 
-    public Prestamo crearPrestamo(Persona prestatario, ArrayList<Item> items, Alerta alerta) {
-        if (prestatario == null || items == null || items.isEmpty()) {
+        Persona prestatario = consultarPersona(correoPrestatario);
+
+        if (prestatario == null || codigosItems == null || codigosItems.isEmpty()) {
             return null;
         }
 
-        for (Item item : items) {
+        ArrayList<Item> items = new ArrayList<Item>();
+
+        for (String codigoItem : codigosItems) {
+            Item item = consultarItem(codigoItem);
+
+            if (item == null) {
+                return null;
+            }
+
             if (itemEstaPrestado(item)) {
                 return null;
             }
+
+            items.add(item);
         }
 
+        Alerta alerta = new Alerta(mensajeAlerta, esRecurrente, tiempo, fechaInicio);
         Prestamo prestamo = new Prestamo(prestatario, items, alerta);
+
         listaPrestamos.add(prestamo);
         return prestamo;
     }
 
-    public boolean agregarItemAPrestamo(Prestamo prestamo, Item item) {
-        if (prestamo == null || item == null) {
-            return false;
-        }
+    public boolean agregarItemAPrestamo(int posicionPrestamo, String codigoItem) {
+        Prestamo prestamo = obtenerPrestamoPorPosicion(posicionPrestamo);
+        Item item = consultarItem(codigoItem);
 
-        if (!listaPrestamos.contains(prestamo)) {
+        if (prestamo == null || item == null) {
             return false;
         }
 
@@ -321,12 +348,11 @@ public class PrestamoControlador {
         return true;
     }
 
-    public boolean eliminarItemDePrestamo(Prestamo prestamo, Item item) {
-        if (prestamo == null || item == null) {
-            return false;
-        }
+    public boolean eliminarItemDePrestamo(int posicionPrestamo, String codigoItem) {
+        Prestamo prestamo = obtenerPrestamoPorPosicion(posicionPrestamo);
+        Item item = consultarItem(codigoItem);
 
-        if (!listaPrestamos.contains(prestamo)) {
+        if (prestamo == null || item == null) {
             return false;
         }
 
@@ -334,12 +360,11 @@ public class PrestamoControlador {
         return true;
     }
 
-    public boolean retornarItemDePrestamo(Prestamo prestamo, Item item) {
-        if (prestamo == null || item == null) {
-            return false;
-        }
+    public boolean retornarItemDePrestamo(int posicionPrestamo, String codigoItem) {
+        Prestamo prestamo = obtenerPrestamoPorPosicion(posicionPrestamo);
+        Item item = consultarItem(codigoItem);
 
-        if (!listaPrestamos.contains(prestamo)) {
+        if (prestamo == null || item == null) {
             return false;
         }
 
@@ -347,9 +372,17 @@ public class PrestamoControlador {
         return true;
     }
 
-    public boolean finalizarPrestamo(Prestamo prestamo) {
-        if (prestamo == null || !listaPrestamos.contains(prestamo)) {
+    public boolean finalizarPrestamo(int posicionPrestamo) {
+        Prestamo prestamo = obtenerPrestamoPorPosicion(posicionPrestamo);
+
+        if (prestamo == null) {
             return false;
+        }
+
+        ArrayList<Item> itemsPrestados = new ArrayList<Item>(prestamo.getItemsPrestados());
+
+        for (Item item : itemsPrestados) {
+            prestamo.eliminarItem(item);
         }
 
         if (prestamo.getPrestatario() != null) {
@@ -363,9 +396,7 @@ public class PrestamoControlador {
     public ArrayList<Prestamo> obtenerPrestamos() {
         return listaPrestamos;
     }
-
     // =========================================================
-
     public String reportePorUsuario() {
         String reporte = "REPORTE POR USUARIO\n";
 
@@ -422,5 +453,23 @@ public class PrestamoControlador {
         }
 
         return reporte;
+    }
+    // =========================================================
+    private Prestamo obtenerPrestamoPorPosicion(int posicionPrestamo) {
+        if (posicionPrestamo < 0 || posicionPrestamo >= listaPrestamos.size()) {
+            return null;
+        }
+
+        return listaPrestamos.get(posicionPrestamo);
+    }
+
+    private boolean itemEstaPrestado(Item item) {
+        for (Prestamo prestamo : listaPrestamos) {
+            if (prestamo.getItemsPrestados().contains(item)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
