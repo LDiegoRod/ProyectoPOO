@@ -66,3 +66,73 @@ public class PanelCategorias extends JPanel {
 
         actualizarLista();
     }
+
+    private void crearCategoria() {
+        String nombre = txtNombre.getText().trim();
+
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Digite el nombre de la categoría.");
+            return;
+        }
+
+        boolean resultado = controlador.crearCategoria(nombre);
+
+        if (resultado) {
+            JOptionPane.showMessageDialog(this, "Categoría creada correctamente.");
+            txtNombre.setText("");
+            actualizarLista();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo crear la categoría. Puede que ya exista.");
+        }
+    }
+
+    private void modificarCategoria() {
+        String nombreActual = txtNombre.getText().trim();
+        String nombreNuevo = txtNombreNuevo.getText().trim();
+
+        if (nombreActual.isEmpty() || nombreNuevo.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Digite el nombre actual y el nuevo nombre.");
+            return;
+        }
+
+        boolean resultado = controlador.modificarCategoria(nombreActual, nombreNuevo);
+
+        if (resultado) {
+            JOptionPane.showMessageDialog(this, "Categoría modificada correctamente.");
+            txtNombre.setText("");
+            txtNombreNuevo.setText("");
+            actualizarLista();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo modificar la categoría.");
+        }
+    }
+
+    private void borrarCategoria() {
+        String nombre = txtNombre.getText().trim();
+
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Digite el nombre de la categoría a borrar.");
+            return;
+        }
+
+        boolean resultado = controlador.borrarCategoria(nombre);
+
+        if (resultado) {
+            JOptionPane.showMessageDialog(this, "Categoría borrada correctamente.");
+            txtNombre.setText("");
+            actualizarLista();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo borrar la categoría.");
+        }
+    }
+
+    private void actualizarLista() {
+        ArrayList<Categoria> categorias = controlador.obtenerCategorias();
+
+        areaCategorias.setText("CATEGORÍAS REGISTRADAS\n\n");
+
+        for (Categoria categoria : categorias) {
+            areaCategorias.append("- " + categoria.getNombre() + "\n");
+        }
+    }
+}
