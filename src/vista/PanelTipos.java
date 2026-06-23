@@ -67,3 +67,72 @@ public class PanelTipos extends JPanel {
         actualizarLista();
     }
 
+    private void crearTipo() {
+        String nombre = txtNombre.getText().trim();
+
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Digite el nombre del tipo.");
+            return;
+        }
+
+        boolean resultado = controlador.crearTipo(nombre);
+
+        if (resultado) {
+            JOptionPane.showMessageDialog(this, "Tipo creado correctamente.");
+            txtNombre.setText("");
+            actualizarLista();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo crear el tipo. Puede que ya exista.");
+        }
+    }
+
+    private void modificarTipo() {
+        String nombreActual = txtNombre.getText().trim();
+        String nombreNuevo = txtNombreNuevo.getText().trim();
+
+        if (nombreActual.isEmpty() || nombreNuevo.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Digite el nombre actual y el nuevo nombre.");
+            return;
+        }
+
+        boolean resultado = controlador.modificarTipo(nombreActual, nombreNuevo);
+
+        if (resultado) {
+            JOptionPane.showMessageDialog(this, "Tipo modificado correctamente.");
+            txtNombre.setText("");
+            txtNombreNuevo.setText("");
+            actualizarLista();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo modificar el tipo.");
+        }
+    }
+
+    private void borrarTipo() {
+        String nombre = txtNombre.getText().trim();
+
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Digite el nombre del tipo a borrar.");
+            return;
+        }
+
+        boolean resultado = controlador.borrarTipo(nombre);
+
+        if (resultado) {
+            JOptionPane.showMessageDialog(this, "Tipo borrado correctamente.");
+            txtNombre.setText("");
+            actualizarLista();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo borrar el tipo. Puede que no exista o que tenga ítems asociados.");
+        }
+    }
+
+    private void actualizarLista() {
+        ArrayList<Tipo> tipos = controlador.obtenerTipos();
+
+        areaTipos.setText("TIPOS REGISTRADOS\n\n");
+
+        for (Tipo tipo : tipos) {
+            areaTipos.append("- " + tipo.getNombre() + "\n");
+        }
+    }
+}
