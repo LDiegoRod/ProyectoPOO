@@ -163,4 +163,144 @@ public class PanelPrestamos extends JPanel {
         }
     }
 
-    
+    private void retornarItemDePrestamo() {
+        Integer posicion = obtenerPosicionPrestamo();
+        String codigoItem = txtCodigoItemIndividual.getText().trim();
+
+        if (posicion == null || codigoItem.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Digite posición del préstamo y código del ítem.");
+            return;
+        }
+
+        boolean resultado = controlador.retornarItemDePrestamo(posicion, codigoItem);
+
+        if (resultado) {
+            JOptionPane.showMessageDialog(this, "Ítem retornado correctamente.");
+            limpiarCamposOperacion();
+            actualizarLista();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo retornar el ítem.");
+        }
+    }
+
+    private void eliminarItemDePrestamo() {
+        Integer posicion = obtenerPosicionPrestamo();
+        String codigoItem = txtCodigoItemIndividual.getText().trim();
+
+        if (posicion == null || codigoItem.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Digite posición del préstamo y código del ítem.");
+            return;
+        }
+
+        boolean resultado = controlador.eliminarItemDePrestamo(posicion, codigoItem);
+
+        if (resultado) {
+            JOptionPane.showMessageDialog(this, "Ítem eliminado del préstamo.");
+            limpiarCamposOperacion();
+            actualizarLista();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo eliminar el ítem del préstamo.");
+        }
+    }
+
+    private void finalizarPrestamo() {
+        Integer posicion = obtenerPosicionPrestamo();
+
+        if (posicion == null) {
+            JOptionPane.showMessageDialog(this, "Digite la posición del préstamo.");
+            return;
+        }
+
+        boolean resultado = controlador.finalizarPrestamo(posicion);
+
+        if (resultado) {
+            JOptionPane.showMessageDialog(this, "Préstamo finalizado correctamente.");
+            limpiarCamposOperacion();
+            actualizarLista();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo finalizar el préstamo.");
+        }
+    }
+
+    private ArrayList<String> obtenerCodigosItemsDesdeTexto() {
+        ArrayList<String> codigos = new ArrayList<String>();
+
+        String texto = txtCodigosItems.getText().trim();
+
+        if (!texto.isEmpty()) {
+            String[] partes = texto.split(",");
+
+            for (String parte : partes) {
+                String codigo = parte.trim();
+
+                if (!codigo.isEmpty()) {
+                    codigos.add(codigo);
+                }
+            }
+        }
+
+        return codigos;
+    }
+
+    private Integer obtenerPosicionPrestamo() {
+        String texto = txtPosicionPrestamo.getText().trim();
+
+        if (texto.isEmpty()) {
+            return null;
+        }
+
+        try {
+            return Integer.parseInt(texto);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "La posición del préstamo debe ser un número entero.");
+            return null;
+        }
+    }
+
+    private void actualizarLista() {
+        ArrayList<Prestamo> prestamos = controlador.obtenerPrestamos();
+
+        areaPrestamos.setText("PRÉSTAMOS REGISTRADOS\n\n");
+
+        for (int i = 0; i < prestamos.size(); i++) {
+            Prestamo prestamo = prestamos.get(i);
+
+            areaPrestamos.append("Posición: " + i + "\n");
+
+            if (prestamo.getPrestatario() != null) {
+                areaPrestamos.append("Persona: " + prestamo.getPrestatario().getNombre() + "\n");
+                areaPrestamos.append("Correo: " + prestamo.getPrestatario().getCorreoElectronico() + "\n");
+            }
+
+            areaPrestamos.append("Fecha préstamo: " + prestamo.getFechaPrestamo() + "\n");
+
+            if (prestamo.getAlertaAsociada() != null) {
+                areaPrestamos.append("Alerta: " + prestamo.getAlertaAsociada().toString() + "\n");
+            }
+
+            areaPrestamos.append("Ítems prestados:\n");
+
+            for (Item item : prestamo.getItemsPrestados()) {
+                areaPrestamos.append("- " + item.toString() + "\n");
+            }
+
+            areaPrestamos.append("-----------------------------\n");
+        }
+    }
+
+    private void limpiarCampos() {
+        txtCorreoPersona.setText("");
+        txtCodigosItems.setText("");
+        txtMensajeAlerta.setText("");
+        txtEsRecurrente.setText("");
+        txtTiempo.setText("");
+        txtFechaInicio.setText("");
+        txtPosicionPrestamo.setText("");
+        txtCodigoItemIndividual.setText("");
+    }
+
+    private void limpiarCamposOperacion() {
+        txtPosicionPrestamo.setText("");
+        txtCodigoItemIndividual.setText("");
+    }
+}
