@@ -1,8 +1,11 @@
 package logica;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Persona {
+public class Persona implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String nombre;
     private String telefono;

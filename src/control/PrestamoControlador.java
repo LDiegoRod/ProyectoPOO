@@ -1,5 +1,12 @@
 package control;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import logica.Alerta;
@@ -9,7 +16,9 @@ import logica.Persona;
 import logica.Prestamo;
 import logica.Tipo;
 
-public class PrestamoControlador {
+public class PrestamoControlador implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
     private ArrayList<Item> listaItems;
     private ArrayList<Persona> listaPersonas;
@@ -38,16 +47,23 @@ public class PrestamoControlador {
             return false;
         }
 
+        if (nombresCategorias != null) {
+            for (String nombreCategoria : nombresCategorias) {
+                Categoria categoria = consultarCategoria(nombreCategoria);
+
+                if (categoria == null) {
+                    return false;
+                }
+            }
+        }
+
         Item item = new Item(codigo, nombre, descripcion);
         item.setTipo(tipo);
 
         if (nombresCategorias != null) {
             for (String nombreCategoria : nombresCategorias) {
                 Categoria categoria = consultarCategoria(nombreCategoria);
-
-                if (categoria != null) {
-                    item.agregarCategoria(categoria);
-                }
+                item.agregarCategoria(categoria);
             }
         }
 
@@ -70,6 +86,16 @@ public class PrestamoControlador {
             return false;
         }
 
+        if (nombresCategorias != null) {
+            for (String nombreCategoria : nombresCategorias) {
+                Categoria categoria = consultarCategoria(nombreCategoria);
+
+                if (categoria == null) {
+                    return false;
+                }
+            }
+        }
+
         item.setNombre(nombre);
         item.setDescripcion(descripcion);
         item.setTipo(tipo);
@@ -83,16 +109,12 @@ public class PrestamoControlador {
         if (nombresCategorias != null) {
             for (String nombreCategoria : nombresCategorias) {
                 Categoria categoria = consultarCategoria(nombreCategoria);
-
-                if (categoria != null) {
-                    item.agregarCategoria(categoria);
-                }
+                item.agregarCategoria(categoria);
             }
         }
 
         return true;
     }
-
     public boolean borrarItem(String codigo) {
         Item item = consultarItem(codigo);
 
@@ -471,5 +493,37 @@ public class PrestamoControlador {
         }
 
         return false;
+    }
+    public boolean guardarDatos(String nombreArchivo) {
+        try {
+            ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(nombreArchivo));
+            salida.writeObject(this);
+            salida.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static PrestamoControlador cargarDatos(String nombreArchivo) {
+        File archivo = new File(nombreArchivo);
+
+        if (!archivo.exists()) {
+            return new PrestamoControlador();
+        }
+
+        try {
+            ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(nombreArchivo));
+            PrestamoControlador controlador = (PrestamoControlador) entrada.readObject();
+            entrada.close();
+            return controlador;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new PrestamoControlador();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new PrestamoControlador();
+        }
     }
 }

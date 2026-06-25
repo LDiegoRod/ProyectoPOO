@@ -1,6 +1,10 @@
 package logica;
 
-public class Alerta {
+import java.io.Serializable;
+
+public class Alerta implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String mensaje;
     private boolean esRecurrente;
