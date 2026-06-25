@@ -1,0 +1,54 @@
+CONTROL DE PRÉSTAMOS
+
+Autor:
+Luis Diego Rodríguez López
+Carné: 2024091061
+
+Descripción:
+Control de Préstamos es una aplicación de escritorio desarrollada en Java con fines educativos para el curso de Programación Orientada a Objetos.
+
+El objetivo del programa es permitir la administración de ítems, personas, tipos, categorías, préstamos, alertas y reportes. La aplicación permite registrar objetos prestables, asociarlos a personas, controlar préstamos activos, retornar ítems, finalizar préstamos y consultar reportes del sistema.
+
+Requisitos:
+Para ejecutar la aplicación se necesita tener instalado Java 17 o una versión superior.
+
+Instalación y ejecución:
+1. Descargar la carpeta ProyectoPOOFinal desde el repositorio.
+2. Mantener el archivo ControlPrestamos.jar dentro de la carpeta descargada.
+3. Ejecutar el archivo ControlPrestamos.jar con doble clic.
+
+En caso de que el archivo no abra con doble clic, se puede ejecutar desde consola con el siguiente comando:
+
+java -jar ControlPrestamos.jar
+
+Uso general:
+La aplicación cuenta con una ventana principal dividida en pestañas:
+
+Tipos:
+Permite crear, modificar, borrar y listar los tipos de ítems.
+
+Categorías:
+Permite crear, modificar, borrar y listar categorías.
+
+Personas:
+Permite registrar, modificar, borrar y listar personas que pueden recibir préstamos.
+
+Ítems:
+Permite crear, modificar, borrar y listar ítems. Para crear un ítem, primero deben existir el tipo y las categorías correspondientes.
+
+Préstamos:
+Permite crear préstamos, agregar ítems a un préstamo, retornar ítems, eliminar ítems de un préstamo y finalizar préstamos.
+
+Reportes:
+Permite generar reportes por usuario, por ítem, por categoría y por tipo.
+
+Persistencia de datos:
+El sistema guarda automáticamente la información registrada al cerrar la aplicación.
+
+Al ejecutarse, el programa genera un archivo llamado datos_prestamos.dat en la misma ubicación donde se encuentra el archivo ControlPrestamos.jar. Este archivo contiene los datos guardados del sistema.
+
+Importante:
+No eliminar ni mover el archivo datos_prestamos.dat si se desea conservar la información registrada. Si este archivo se elimina, el programa iniciará sin datos guardados.
+
+Notas:
+Este programa fue desarrollado únicamente con fines académicos y educativos. No corresponde a un sistema comercial ni a una aplicación destinada para uso en producción.
